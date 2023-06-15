@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Code Minifier</title>
+
+
+	<!-- <script src="https://cdn.jsdelivr.net/npm/source-map@0.7.3/dist/source-map.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/terser/dist/bundle.min.js"></script>
+	<script src="https://kangax.github.io/html-minifier/dist/htmlminifier.min.js"></script> -->
+
+	<script src="./source-map.js"></script>
+	<script src="./bundle.min.js"></script>
+	<script src="./htmlminifier.min.js"></script>
+	<script>
+		window.minify = require("html-minifier").minify;
+	</script>
+
+	<script src="index.js"></script>
+
+
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+		}
+
+		form {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin-top: 50px;
+		}
+
+		textarea {
+			width: 500px;
+			height: 200px;
+			margin-bottom: 20px;
+			padding: 10px;
+			border: 1px solid #ccc;
+			resize: vertical;
+		}
+
+		button {
+			padding: 10px 20px;
+			font-size: 16px;
+			background-color: #4CAF50;
+			color: #fff;
+			border: none;
+			cursor: pointer;
+		}
+
+		button:hover {
+			background-color: #3e8e41;
+		}
+
+		.result {
+			display: none;
+		}
+
+		.result-heading {
+			font-size: 18px;
+			margin-bottom: 10px;
+		}
+
+		.result-textarea {
+			width: 500px;
+			height: 200px;
+			margin-bottom: 20px;
+			padding: 10px;
+			border: 1px solid #ccc;
+			resize: vertical;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>Code Minifier</h1>
+	<form>
+		<textarea id="input-html" placeholder="Enter your HTML code here"></textarea>
+		<textarea id="input-css" placeholder="Enter your CSS code here"></textarea>
+		<textarea id="input-js" placeholder="Enter your JavaScript code here"></textarea>
+		<button type="button" onclick="minifyCode()">Minify</button>
+		<div class="result">
+			<p class="result-heading">Minified code:</p>
+			<textarea id="minified-code" class="result-textarea"></textarea>
+		</div>
+	</form>
+	<script type="module">
+
+		// import { minify as minifyJS } from 'https://cdn.skypack.dev/terser' // https://github.com/terser/terser#minify-options
+		// import { default as minifyHTML } from 'https://cdn.skypack.dev/html-minifier@latest' // https://github.com/kangax/html-minifier
+
+		import CleanCSS from "./clean-css.js"; // https://github.com/clean-css/clean-css
+		// https://jspm.org/cdn/jspm-dev
+	</script>
+	<script>
+		function minifyCode() {
+			var inputHtml = document.getElementById("input-html").value;
+			var inputCss = document.getElementById("input-css").value;
+			var inputJs = document.getElementById("input-js").value;
+			var resultTextarea = document.getElementById("minified-code");
+			try {
+				// https://github.com/kangax/html-minifier#options-quick-reference
+				var minifiedHtml = minifyHTML(inputHtml);
+
+				// https://github.com/clean-css/clean-css#constructor-options
+				var options = {
+					format: {
+						breakWith: 'lf', // Sets the line break character to LF.
+						indentBy: 2, // Sets the number of spaces to use for indentation.
+						spaces: { // Controls the number of spaces around different types of CSS rules.
+							beforeBlockBegins: true,
+							beforeValue: true,
+							afterProperty: true,
+							afterSelector: true
+						}
+					},
+					level: 2, // Sets the optimization level to aggressive.
+					restructuring: true, // Enables restructuring of rules.
+					semanticMerging: true, // Enables semantic merging of rules.
+					sourceMap: true, // Generates a source map file.
+				};
+				var minifiedCss = new CleanCSS(options).minify(inputCss);
+
+				// https://github.com/terser/terser#minify-options
+				async function minifyJs(inputJs) {
+					var options_ = {
+						compress: {
+							arrows: true,
+							unused: true,
+						},
+						mangle: true,
+						output: {
+							beautify: false,
+							comments: false,
+						}
+					};
+					var minifiedJs = await Terser.minify(inputJs, options_);
+					return minifiedJs;
+				}
+				minifyJs(inputJs)
+					.then(minifiedJs => {
+						resultTextarea.value += minifiedJs.code
+					})
+					.catch(error => console.error(error));
+
+				resultTextarea.value = minifiedHtml + "\n" + minifiedCss.styles + "\n";
+
+				document.querySelector('.result').style.display = 'block';
+			} catch (err) {
+				resultTextarea.value = err.message;
+				document.querySelector('.result').style.display = 'block';
+			}
+		}
+	</script>
+</body>
+
+</html>
