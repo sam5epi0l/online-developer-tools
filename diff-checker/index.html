@@ -1,0 +1,53 @@
+<html>
+<head>
+  <script src="./../snippet/codemirror/codemirror.js"></script>
+  <link rel="stylesheet" href="./../snippet/codemirror/codemirror.css">
+  <script src="./../snippet/codemirror/addon/merge/merge.js"></script>
+  <link rel="stylesheet" href="./../snippet/codemirror/addon/merge/merge.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
+
+  <title>Diff Checker</title>
+  <meta name="description" content="Compare two versions of code or text with this free online tool and edit, highlight, and merge changes easily.">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 32px;
+      color: #333333;
+      text-align: center;
+    }
+
+    #view {
+      max-width: 1200px;
+      margin: 0 auto;
+      border: 1px solid #cccccc;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>Code Comparison Tool</h1>
+
+  <div id="view"></div>
+
+
+  <script>
+    var orig1 = "line1\nline2\nline3";
+    var orig2 = "line1\n\nline3\n\nline4\nline5";
+
+    var dv = CodeMirror.MergeView(view, {
+      value: orig1,
+      origLeft: orig2,
+      lineNumbers: true,
+      mode: "text/plain",
+      highlightDifferences: true,
+      allowEditingOriginals: true
+    });
+
+</script> </body> </html>
