@@ -1,0 +1,3 @@
+[submodule "carbon-clone"]
+	path = carbon-clone
+	url = https://github.com/sam5epi0l/carbon-clone
